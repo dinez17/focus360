@@ -4,6 +4,10 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
+import testimonialRoutes from './routes/testimonialRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import leadRoutes from './routes/leadRoutes.js';
+import contactFormRoutes from './routes/contactFormRoutes.js';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -55,7 +59,11 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/gallery', galleryRoutes);
 app.use('/api/v1/projects', projectRoutes);
-// ...etc
+app.use('/api/v1/testimonials', testimonialRoutes);
+app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/leads', leadRoutes);
+app.use('/api/v1/contact-form', contactFormRoutes);
+
 
 // 404 + error handling — always LAST
 app.use(notFound);
