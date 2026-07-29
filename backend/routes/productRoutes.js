@@ -7,7 +7,7 @@ import {
     deleteProduct,
     deleteProductImage,
 } from '../controllers/productController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
 import upload from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
@@ -15,9 +15,9 @@ const router = express.Router();
 router.get('/', getProducts);
 router.get('/:slug', getProductBySlug);
 
-router.post('/', protect, upload.array('images', 6), createProduct);
-router.put('/:id', protect, upload.array('images', 6), updateProduct);
-router.delete('/:id', protect, deleteProduct);
-router.delete('/:id/images/:publicId', protect, deleteProductImage);
+router.post('/', protect, authorize('superadmin', 'editor'), upload.array('images', 6), createProduct);
+router.put('/:id', protect, authorize('superadmin', 'editor'), upload.array('images', 6), updateProduct);
+router.delete('/:id', protect, authorize('superadmin', 'editor'), deleteProduct);
+router.delete('/:id/images/:publicId', protect, authorize('superadmin', 'editor'), deleteProductImage);
 
 export default router;

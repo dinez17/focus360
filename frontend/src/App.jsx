@@ -32,6 +32,8 @@ import ManageTestimonials from '@/pages/admin/ManageTestimonials';
 import ManageLeads from '@/pages/admin/ManageLeads';
 import ManageSettings from '@/pages/admin/ManageSettings';
 import ChangePassword from '@/pages/admin/ChangePassword';
+import ManageCustomers from '@/pages/admin/ManageCustomers';
+import ManageStaff from '@/pages/admin/ManageStaff';
 
 function App() {
   return (
@@ -75,6 +77,8 @@ function App() {
               <Route path="gallery" element={<ManageGallery />} />
               <Route path="testimonials" element={<ManageTestimonials />} />
               <Route path="leads" element={<ManageLeads />} />
+              <Route path="customers" element={<ManageCustomers />} />
+              <Route path="staff" element={<ManageStaff />} />
               <Route path="settings" element={<ManageSettings />} />
               <Route path="change-password" element={<ChangePassword />} />
             </Route>

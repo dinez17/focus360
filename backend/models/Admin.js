@@ -13,14 +13,14 @@ const adminSchema = new mongoose.Schema(
         password: { type: String, required: true, minlength: 6 },
         role: {
             type: String,
-            enum: ['superadmin', 'editor'],
+            enum: ['superadmin', 'editor', 'telecaller'],
             default: 'editor',
         },
         lastLogin: { type: Date },
     },
-    { timestamps: true } // adds createdAt & updatedAt automatically
+    { timestamps: true }
 );
-// Hash password before saving — only runs if password field was modified
+
 adminSchema.pre('save', async function () {
     if (!this.isModified('password')) return;
     const salt = await bcrypt.genSalt(10);

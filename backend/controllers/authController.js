@@ -94,3 +94,59 @@ export const changePassword = asyncHandler(async (req, res) => {
         message: 'Password changed successfully',
     });
 });
+
+// @desc    Create a new staff account (editor or telecaller) — superadmin only
+// @route   POST /api/v1/auth/create-staff
+// @access  Protected (superadmin only)
+export const createStaff = asyncHandler(async (req, res) => {
+    const { name, email, password, role } = req.body;
+
+    if (!name || !email || !password || !role) {
+        res.status(400);
+        throw new Error('Name, email, password, and role are required');
+    }
+
+    if (!['editor', 'telecaller'].includes(role)) {
+        res.status(400);
+        throw new Error('Role must be editor or telecaller');
+    }
+
+    const existing = await Admin.findOne({ email });
+    if (existing) {
+        res.status(400);
+        throw new Error('An account with this email already exists');
+    }
+
+    const staff = await Admin.create({ name, email, password, role });
+
+    res.status(201).json({
+        success: true,
+        message: `${role} account created successfully`,
+        data: { id: staff._id, name: staff.name, email: staff.email, role: staff.role },
+    });
+});
+
+// @desc    Get all staff accounts — superadmin only
+// @route   GET /api/v1/auth/staff
+// @access  Protected (superadmin only)
+export const getStaff = asyncHandler(async (req, res) => {
+    const staff = await Admin.find({ role: { $ne: 'superadmin' } }).select('-password');
+    res.status(200).json({ success: true, data: staff });
+});
+
+// @desc    Delete a staff account — superadmin only
+// @route   DELETE /api/v1/auth/staff/:id
+// @access  Protected (superadmin only)
+export const deleteStaff = asyncHandler(async (req, res) => {
+    const staff = await Admin.findById(req.params.id);
+    if (!staff) {
+        res.status(404);
+        throw new Error('Staff account not found');
+    }
+    if (staff.role === 'superadmin') {
+        res.status(400);
+        throw new Error('Cannot delete a superadmin account');
+    }
+    await staff.deleteOne();
+    res.status(200).json({ success: true, message: 'Staff account deleted' });
+});

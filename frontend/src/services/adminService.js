@@ -43,3 +43,7 @@ export const adminUpdateTestimonial = (id, formData) =>
     api.put(`/testimonials/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const adminDeleteTestimonial = (id) => api.delete(`/testimonials/${id}`);
 
+// Staff management
+export const createStaff = (payload) => api.post('/auth/create-staff', payload);
+export const getStaff = () => api.get('/auth/staff');
+export const deleteStaffAccount = (id) => api.delete(`/auth/staff/${id}`);
