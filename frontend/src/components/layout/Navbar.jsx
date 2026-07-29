@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '@/assets/focus360-logo.png';
+import { HiOutlineUser } from 'react-icons/hi';
 const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About Us', path: '/about' },
@@ -50,6 +51,15 @@ const Navbar = () => {
                             {link.name}
                         </NavLink>
                     ))}
+                    {/*  admin page link */}
+                    <Link
+                        to="/admin/login"
+                        className="text-dark-300 hover:text-primary-500 transition-colors"
+                        aria-label="Admin Login"
+                        title="Admin Login"
+                    >
+                        <HiOutlineUser className="text-xl" />
+                    </Link>
 
                     <a href="tel:+919566677227"
                         className="bg-primary-500 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-primary-600 transition-colors shadow-md"
@@ -90,10 +100,21 @@ const Navbar = () => {
                                 >
                                     {link.name}
                                 </NavLink>
+
                             ))}
+
+                            {/* added the link to admin login page - for mobile screen */}
+                            <Link
+                                to="/admin/login"
+                                onClick={() => setIsOpen(false)}
+                                className="py-2 font-body font-medium text-dark-300 border-t border-light-400 mt-2 pt-4"
+                            >
+                                Admin Login
+                            </Link>
                         </div>
                     </motion.div>
                 )}
+
             </AnimatePresence>
         </header>
     );
