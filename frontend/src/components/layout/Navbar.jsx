@@ -34,7 +34,7 @@ const Navbar = () => {
 
 
                 <Link to="/" className="flex items-center">
-                    <img src={logo} alt="Focus 360 Integral Security Solutions" className="h-12 w-auto object-contain" />
+                    <img src={logo} alt="Focus 360 Integral Security Solutions" className="h-32 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Nav */}

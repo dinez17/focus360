@@ -1,6 +1,6 @@
 import { HiPencil, HiTrash } from 'react-icons/hi';
 
-// Generic table for admin list views — columns define what to render per row
+
 const DataTable = ({ columns, data, onEdit, onDelete }) => (
     <div className="bg-white rounded-xl shadow-sm border border-light-400 overflow-x-auto">
         <table className="w-full text-sm">

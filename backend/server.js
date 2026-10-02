@@ -17,12 +17,18 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import connectDB from './config/db.js';
+import connectDB, { getLastMongoError, getMongoUri } from './config/db.js';
 
 dotenv.config();
-connectDB();
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+let isDatabaseConnected = false;
+let isDatabaseConnecting = false;
 
 // Security headers
 app.use(helmet());
@@ -50,7 +56,26 @@ if (process.env.NODE_ENV === 'development') {
 
 // Health check route — useful for Render deployment verification later
 app.get('/api/v1/health', (req, res) => {
-    res.status(200).json({ success: true, message: 'Server is healthy' });
+    res.status(200).json({
+        success: true,
+        message: 'Server is healthy',
+        database: isDatabaseConnected ? 'connected' : 'not_connected',
+        mongoUriConfigured: Boolean(getMongoUri()),
+        mongoReadyState: mongoose.connection.readyState,
+        lastMongoError: getLastMongoError(),
+    });
+});
+
+app.use('/api/v1', (req, res, next) => {
+    if (req.path === '/health' || isDatabaseConnected) {
+        next();
+        return;
+    }
+
+    res.status(503).json({
+        success: false,
+        message: 'Database is not connected. Check MONGODB_URI and MongoDB Atlas Network Access.',
+    });
 });
 
 // Routes will be mounted here in later phases:
@@ -67,6 +92,15 @@ app.use('/api/v1/leads', leadRoutes);
 app.use('/api/v1/contact-form', contactFormRoutes);
 app.use('/api/v1/customers', customerRoutes);
 
+if (process.env.NODE_ENV === 'production') {
+    const frontendDistPath = path.join(__dirname, '../frontend/dist');
+    app.use(express.static(frontendDistPath));
+
+    app.get(/^(?!\/api\/v1).*/, (req, res) => {
+        res.sendFile(path.join(frontendDistPath, 'index.html'));
+    });
+}
+
 // 404 + error handling — always LAST
 app.use(notFound);
 app.use(errorHandler);
@@ -77,3 +111,30 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
+
+const updateDatabaseConnection = async () => {
+    if (isDatabaseConnecting) {
+        return;
+    }
+
+    if (mongoose.connection.readyState === 1) {
+        isDatabaseConnected = true;
+        return;
+    }
+
+    isDatabaseConnecting = true;
+    const connected = await connectDB();
+    isDatabaseConnected = connected;
+    isDatabaseConnecting = false;
+};
+
+mongoose.connection.on('connected', () => {
+    isDatabaseConnected = true;
+});
+
+mongoose.connection.on('disconnected', () => {
+    isDatabaseConnected = false;
+});
+
+updateDatabaseConnection();
+setInterval(updateDatabaseConnection, 30000);

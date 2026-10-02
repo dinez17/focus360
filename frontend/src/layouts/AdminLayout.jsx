@@ -52,7 +52,7 @@ const AdminLayout = () => {
                     }`}
             >
                 <div className="p-4 border-b border-dark-700 flex items-center justify-between">
-                    <img src={logo} alt="Focus 360" className="h-10 w-auto object-contain" />
+                    <img src={logo} alt="Focus 360" className="h-28 w-auto object-contain" />
                     <button className="lg:hidden text-white text-2xl" onClick={closeSidebar} aria-label="Close menu">
                         <HiX />
                     </button>

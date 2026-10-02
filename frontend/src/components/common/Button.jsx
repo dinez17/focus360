@@ -6,7 +6,7 @@ const Button = ({ to, href, children, variant = 'primary', className = '', ...pr
         secondary: 'border-2 border-primary-500 text-primary-500 hover:bg-primary-50',
     };
 
-    // Merge base styles with any extra className passed in, instead of overwriting
+
     const classes = `inline-block px-6 py-3 rounded-xl font-medium transition-colors ${styles[variant]} ${className}`;
 
     if (to) return <Link to={to} className={classes} {...props}>{children}</Link>;

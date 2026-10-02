@@ -2,22 +2,38 @@ import mongoose from 'mongoose';
 
 const customerSchema = new mongoose.Schema(
     {
-        customerId: { type: String, unique: true }, // auto-generated: CUST-0001
+        customerId: { type: String, unique: true },
         customerName: { type: String, required: true, trim: true },
         mobileNo: { type: String, required: true },
         whatsappNo: { type: String },
         address: { type: String },
 
-        cctvType: { type: String }, // e.g., Dome, Bullet, Mixed
+        // NEW: product type selection
+        productType: [{ type: String, enum: ['CCTV', 'RO Water Purifier'] }],
+
+        //CCTV - specific details
+
+        cctvType: { type: String },
         noOfCameras: { type: Number, default: 0 },
         cameraBrand: { type: String },
-        dvrNvr: { type: String }, // "DVR" or "NVR"
+        dvrNvr: { type: String },
         dvrNvrModel: { type: String },
-        hardDisk: { type: String }, // e.g., "1TB"
+        hardDisk: { type: String },
+
+        // NEW: RO Water Purifier-specific details 
+        roDetails: {
+            roType: { type: String, enum: ['Domestic', 'Commercial/Industrial'] },
+            capacityLiters: { type: Number }, // e.g., 10 Liter capacity
+            purificationStages: { type: Number }, // e.g., 5-stage
+            pumpCapacity: { type: String }, // e.g., "75 GPD"
+            membraneCapacity: { type: String }, // e.g., "100 GPD"
+            model: { type: String },
+            tdsLevel: { type: String }, // TDS reading at installation, useful for service history
+        },
 
         installationDate: { type: Date },
         warrantyMonths: { type: Number, default: 12 },
-        warrantyEndDate: { type: Date }, // auto-calculated in pre-save hook
+        warrantyEndDate: { type: Date },
 
         lastServiceDate: { type: Date },
         nextServiceDue: { type: Date },

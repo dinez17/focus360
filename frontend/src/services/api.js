@@ -4,7 +4,7 @@ import axios from 'axios';
 // instead of creating its own axios calls, so base URL, auth headers,
 // and error interceptors stay consistent across the whole app.
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },

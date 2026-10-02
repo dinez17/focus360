@@ -120,7 +120,7 @@ export const getContactInfo = asyncHandler(async (req, res) => {
 // @route   PUT /api/v1/settings/contact
 // @access  Protected
 export const updateContactInfo = asyncHandler(async (req, res) => {
-    const { phone, email, address, googleMapsEmbedUrl, whatsappNumber } = req.body;
+    const { phone, email, address, googleMapsEmbedUrl, whatsappNumber, branches, serviceAreas } = req.body;
 
     let info = await ContactInfo.findOne();
     if (!info) info = new ContactInfo();
@@ -130,6 +130,8 @@ export const updateContactInfo = asyncHandler(async (req, res) => {
     if (address !== undefined) info.address = address;
     if (googleMapsEmbedUrl !== undefined) info.googleMapsEmbedUrl = googleMapsEmbedUrl;
     if (whatsappNumber !== undefined) info.whatsappNumber = whatsappNumber;
+    if (branches) info.branches = JSON.parse(branches); // array of {branchName, address, phone, isMainBranch}
+    if (serviceAreas) info.serviceAreas = JSON.parse(serviceAreas); // array of strings
 
     await info.save();
 
